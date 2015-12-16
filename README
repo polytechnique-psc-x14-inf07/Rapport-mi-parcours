@@ -1,0 +1,6 @@
+% Fichier .tex utilisant le package polytechnique modifié à des fins d'utilisation dans le cadre du psc.
+%
+% Utiliser les commandes suivantes :
+\ajout{<date>} % à placer en amont d'un ajout que vous venez de faire
+\suggest{<texte de remplacement>} % à placer en aval d'un texte que vous proposez de remplacer
+\insist{<texte à accentuer>} % à utiliser pour accentuer une partie de texte
