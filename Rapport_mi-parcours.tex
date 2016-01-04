@@ -8,7 +8,7 @@
 \usepackage{ifthen} \usepackage{amsmath} \usepackage{amsfonts} \usepackage{amssymb} \usepackage{graphicx}
 \usepackage{enumitem}
 \usepackage{multicol}
-\usepackage[%notes,
+\usepackage[notes,
 			titlepage,
 			a4paper,
 			pagenumber,
@@ -39,9 +39,46 @@
 \maketitle
 \renewcommand{\baselinestretch}{1.1}
 \setlength{\parskip}{0.5em}
-\tableofcontents\clearpage
+\tableofcontents
+\clearpage
 
+\addcontentsline{toc}{section}{Présentation succincte du sujet}
+\section*{Présentation succincte du sujet}
+	
+\section{Résultats}
+	\subsection{DNS poisonning}
+	
+	Après une phase de recherche sur les différents protocoles, et les réseaux en général, nous avons comencé à nous intéresser plus spécifiquement au DNS poisonning. Nous avons découper le travail en deux parties : unepartie observation, et une partie action. Nous avons donc écrit avec scapy (python) deux programmes : \begin{itemize}
+	\item l'un qui analyse le traffic, détecte les requêtes DNS, et affiche les résultats, avec des informations sur le paquet (donc la requête)
+	\item l'autre répond à chaque requête DNS par un paquet DNS fabriqué main.
+\end{itemize}
 
+	Ces deux programmes sont à l'heure actuelle opérationnels. 
+	
+	Nous avons cependant rencontré un certain nombre de difficultés, notamment : \begin{itemize}
+		\item détecter un paquet DNS ne nous a pas posé de réel problème, mais il fallait détecter plus précisemment les requêtes DNS, ainsi que récupérer les adresses IP, ports, ... pour pouvoir créer une réponse adaptée.
+		\item nous réussissions à envoyer un paquet DNS, mais celui-ci apparaissait comme non-valide pour Wireshark (et donc les autres programmes) : la checksum était fausse. Nous avons donc modifié la façon dont nous créons le paquet DNS réponse (Scapy calcule automatiquement les checksums, mais ne les recalcule pas en cas de modification du paquet).
+		\item la commange dig ne reconnaissait pas notre paquet réponse. Nous avons donc vérifié que toutes les autorités, serveurs de l'Ecole polytechnique, étaient bien présentes dans le paquet réponse. Nous avons vérifié par ailleurs que le paquet était accepté par Wireshark. \suggest{Cela n'ayant pas résolu le problème, nous avons connecté nos ordinateurs sur un réseau Wi-Fi personnel (différent de celui de l'Ecole polytechnique), et avons fait attention à interroger nos ordinateurs personnels, sans interroger celui qui faisait tourner les programmes. Nous avons eu alors des résultats positifs.}
+		\item la rapidité des serveurs DNS est un réel problème, auquel nous ne nous sommes pas encore attelés. En effet, pour réussir l'attaque, il faut répondre avant les vrais serveurs DNS : la première réponse est la réponse enregistrée.
+	\end{itemize}
 
+	\subsection{Interruption d'une communication TCP établie}
+	
+	Pour assurer l'efficacité de l'attaque précédente, il faut faire en sorte qu'il y ait des requêtes DNS. Pour cela, il faut interrompre les connexions TCP existantes. Nous avons écrit un programme, toujours avec Scapy, qui envoie un paquet demandant la fin de la communication au demandeur. 
+	
+	Cependant, ce programme est trop lent pour réellement interrompre la communication : la vrai réponse arrive avant la nôtre, ce qui la rend obsolète. Nous avons deux hypothèses de travail : \begin{itemize}
+		\item réécrire ce programme dans un langage plus bas-niveau, afin d'améliorer le temps de réaction de notre programme : nous avons choisi le langage C.
+		\item anticiper les réponses suivantes : il nous est impossible de prendre de vitesse la première réponse, nous allons donc essayer de prendre la place de la deuxième, troisième, ... réponse. Cela nous force à analyser plusieurs échanges de paquets TCP, pour comprendre et être en mesure de prédire les incrémentations futures. En effet, à chaque échange de paquets, un compteur est incrémenté dans le paquet retourné. Si nous sommes capables de prédire la valeur de ce compteur après n échanges, nous avons résolu notre problème
+	\end{itemize}
+	
+	C'est sur ces points que nous allons travailler dans les semaines à venir.
 
+\section{Objectifs à venir}
+	\suggest{
+	\begin{itemize}
+		\item accélérer le programme pour le DNS poisonning
+		\item accélérer le programme TCP et anticiper sur les réponses suivantes
+		\item comment bloquer les attaques ci-dessus ?
+	\end{itemize}	
+}
 \end{document}
