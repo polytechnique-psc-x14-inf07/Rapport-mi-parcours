@@ -46,6 +46,9 @@
 
 \addcontentsline{toc}{section}{Présentation succincte du sujet}
 \section*{Présentation succincte du sujet}
+    Objectif final
+    
+    Objectif de la première partie d'année
 
 \section{Le point sur nos résultats}
 
@@ -95,15 +98,23 @@
 
     \subsection{Interruption d'une communication TCP établie}
 
-    Pour assurer l'efficacité de l'attaque précédente, il faut faire en sorte qu'il y ait des requêtes DNS. Pour cela, il faut interrompre les connexions TCP existantes. Nous avons écrit un programme, toujours avec \verb!scapy!, qui envoie un paquet demandant la fin de la communication au demandeur.
 
-    Cependant, ce programme est trop lent pour réellement interrompre la communication~: la vrai réponse arrive avant la nôtre, ce qui la rend obsolète. Nous avons deux hypothèses de travail~:
-    \begin{itemize}[label=\color{bleu303}\textbullet{}]
-        \item Réécrire ce programme dans un langage plus bas-niveau, afin d'améliorer le temps de réaction de notre programme~: nous avons choisi le langage C.
-        \item Anticiper les réponses suivantes~: il nous est impossible de prendre de vitesse la première réponse, nous allons donc essayer de prendre la place de la deuxième, troisième, ... réponse. Cela nous force à analyser plusieurs échanges de paquets TCP, pour comprendre et être en mesure de prédire les incrémentations futures. En effet, à chaque échange de paquets, un compteur est incrémenté dans le paquet retourné. Si nous sommes capables de prédire la valeur de ce compteur après n échanges, nous avons résolu notre problème
-    \end{itemize}
+  Pour assurer l'efficacité de l'attaque précédente, il faut faire en sorte qu'il y ait des requêtes DNS. Pour cela, il faut interrompre les connexions TCP existantes. Nous avons écrit un programme, toujours avec \verb!Scapy!, qui envoie un paquet demandant la fin de la communication au demandeur (paquet FIN).
 
-    C'est sur ces points que nous allons travailler dans les semaines à venir.
+
+       Dans le cas général, une connexion TCP commence par un three-way handshake (il existe aussi l’ouverture simultanée, mais elle est beaucoup moins fréquente)~: le client envoie un paquet SYN (synchronize) au serveur~; le serveur répond avec un paquet SYN+ACK (acknowledgement), signalant qu'il a bien reçu la demande de connexion et qu'il est prêt à louvrir de son côté~; enfin, le client renvoie un paquet ACK et la connexion est finalement établie. Les paquets portent aussi des numéros de séquence, qui sont importants pour éviter toute confusion puisque la connexion d'un même client peut se fermer et rouvrir en succession rapide ou alors être interrompue avec perte de mémoire (il faut la rétablir à partir de zéro).
+    
+      Après l'établissement, client et serveur échangent des données jusqu'à ce que l'un des deux demande de mettre un terme à la connexion, lorsqu'ils n'ont plus de données à envoyer. D'abord, nous avions l'idée d'imposer cette opération prématurément en envoyant un paquet FIN. Notre programme analyse le trafic, filtre les paquets TCP et, pour les paquets SYN trouvés, renvoie un paquet FIN fabriqué à la main.
+    
+      De même que pour les paquets DNS, la détection des paquets TCP-SYN, avec les connaissances de sa structure, et la fabrication des paquets réponse, non pas par modification des paquets reçus, mais par création de nouveaux paquets avec \verb!Scapy! pour éviter des problèmes comme celui de la somme de contrôle (checksum), ne nous ont pas posé de grandes difficultés. Cependant, ce programme est trop lent pour réellement interrompre la communication~: la vraie réponse arrive toujours avant la nôtre, qui est invariablement ignorée. Nous envisageons donc deux possibilités de travail~:
+  \begin{itemize}[label=\color{bleu303}\textbullet{}]
+      \item Réécrire ce programme dans un langage plus bas-niveau, afin d'améliorer le temps de réaction de notre programme, voire le faire plus vite que les serveurs~: nous avons choisi le langage C.
+      \item Anticiper les réponses suivantes~: s'il nous est impossible de prendre de vitesse la première réponse, nous allons donc essayer de prendre la place de la deuxième, troisième ou énième réponse. Cela nous force à analyser plusieurs échanges de paquets TCP, pour comprendre et être en mesure de prédire les incrémentations futures. En effet, à chaque échange de paquets, les numéros de séquence sont incrémentés dans les paquets retournés. Si nous sommes capables de prédire ses valeurs après n échanges, nous avons résolu notre problème~: même si notre réponse est plus lente, nous pourrons la minuter afin qu'elle s'ajuste à la bonne position.
+  \end{itemize}
+
+
+  C'est sur ces points que nous allons travailler dans les semaines à venir.
+\newpage
 
 \section{Actualisation des objectifs}
 
