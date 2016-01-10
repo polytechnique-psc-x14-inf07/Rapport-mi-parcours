@@ -46,10 +46,14 @@
 
 \addcontentsline{toc}{section}{Présentation succincte du sujet}
 \section*{Présentation succincte du sujet}
-    Objectif final
+    Nous avions initialement deux objectifs. Dans un premier temps, nous voulions mettre en évidence la possibilité d’obtenir des informations censées être sécurisées. Dans un deuxième temps, nous devions utiliser l’expérience acquise dans la phase « hacking » afin de créer, sûrement sous forme d’application, une méthode pour mieux protéger les données personnelles contenues par les smartphones.
+	Aucun des deux objectifs n'a été totalement réalisé jusqu'à maintenant. Cela nous oblige à revoir nos exigences à la baisse par rapport au projet initial. Cela avait cependant été anticipé, lorsque nous nous étions rendu compte de la complexité du sujet et surtout de sa constante actualisation. Il semble plus raisonnable de concentrer nos efforts sur la partie mise en évidence des failles, qui représentait déjà le cœur du projet.
+	Cette actualisation de nos objectifs nous permettra de mieux comprendre les détails du problème, plutôt que de se précipiter
+et essayer de corriger une faille mal comprise.
     
     Objectif de la première partie d'année
 
+\newpage
 \section{Le point sur nos résultats}
 
     \subsection{Mise en place des moyens de communication}
@@ -124,13 +128,51 @@
         \item Comment bloquer les attaques ci-dessus~?
     \end{itemize}
 
-    Nous avons manifestement pris du retard sur les objectifs initiaux~: nous souhaitions avoir fini la phase «~attaque~» du projet pour le rendu de ce rapport, or l'une des deux parties de cette phase n'est pas suffisamment efficace pour être utilisée dans une attaque réelle. Nous devrons donc revoir nos objectifs à la baisse.
+	\subsection{Accélérer le programme pour le DNS poisoning}
+	
+	Comme cela a été mentionné dans la première partie, la rapidité de notre réponse lors du DNS poisoning est un problème.
+En effet, les serveurs DNS sont beaucoup plus performants que nos ordinateurs et renvoient la réponse avant que nous ayons pu envoyer la notre, la cible ne se contentant que de la première réponse, l'attaque n'aboutit pas.
 
-    Notre objectif final est maintenant de concevoir une protection contre une attaque de type DNS poisoning, ou au moins d'empêcher que la connexion TCP soit interrompue fallacieusement.
+	Il y a plusieurs pistes pour palier à ce problème, la première est évidemment d'utiliser des machines plus puissantes, nous avons eu de bons résultats en explorant cette piste et nous allons continuer dans cette voie. Néanmoins, dans le cadre de ce projet nous souhaitions aussi mettre en évidence la facilité d'une attaque sur les communications, c'est pourquoi nous pensons qu'il y a d'autres moyens d'accélérer notre réponse, qui ne passe pas forcément par une amélioration de notre matériel, mais plutôt par une amélioration du code.
 
-    Cependant, il faudra tout d'abord finir ce que nous avons commencé~: optimiser le code de l'interruption de connexion TCP en abaissant le niveau du langage, et en essayant d'anticiper sur les échanges à venir.
+	En effet, nous avons choisi d'utiliser le langage Python ainsi que la bibliothèque Scapy, qui est un langage de relativement haut-niveau. Nous pensons qu'en essayant avec un langage de plus bas niveau, nous pourrions gagner un temps suffisant pour permettre à presque n'importe quelle machine de pratiquer une attaque de type DNS Poisoning. La piste à explorer serait alors de réécrire notre langage en C pour profiter du temps de réaction que fournit un langage de bas niveau et ainsi renvoyer la réponse avant le serveur DNS.
 
-    Puis nous prendrons contact avec la Direction des Systèmes d'information pour avoir des informations sur le dispositif mis en place peu avant les vacances, et qui bloque la vue des paquets en transit qui ne nous sont pas destinés~: la manipulation rend le mode promiscuous inefficace. Par ailleurs, nous devrons engager une nouvelle phase de recherche ce mois-ci, afin d'avoir suffisamment de connaissances sur l'état de l'art pour développer un outil capable de contrer ceux que nous avons créés jusqu'à présent.
+	Étant donné le retard que nous avons pris sur nos objectifs initiaux, et comme nous avons une version fonctionnelle de notre programme, il est probable que nous mettions de côté, du moins pour le moment, cette partie-là et avancions sur l'interruption de la connexion TCP qui n'est pas tout à fait fonctionnelle pour le moment.
+	De plus nous allons commencer à avancer sur la deuxième partie du projet qui est la partie sécurisation, qui risque elle aussi de prendre un peu de temps.
+
+	En parallèle, nous allons aussi nous poser la question d'éventuels tests sur des machines utilisant Android pour savoir si nous concentrons la partie sécurisation sur cet OS, afin d'essayer de fournir un produit final qui protégerait ce système contre une attaque de type DNS Poisoning.
+
+	 \subsection{Accélérer le programme TCP}
+ 
+	Comme nous avons décrit dans la Section 1.4,  dans notre objectif initial d'interrompre une communication TCP déjà établie, nous avons constaté quelques difficultés liées à la vitesse de réponse de notre programme : notre réponse arrive après la réponse du serveur. Divers facteurs affectent ce problème : la vitesse de l’ordinateur, notre localisation par rapport à la cible et la rapidité de réponse de notre algorithme. Ces deux premiers facteurs liés au hardware sont difficiles à contrôler pour nous et jusqu'à maintenant nous sommes plus concentrés sur l'amélioration de notre programme en terme de rapidité d'exécution.
+
+	Pour les raisons décrites ci-dessus et les problèmes que nous avons rencontrés, nous avons décidé d’actualiser notre objectif initial d'interrompre une connexion TCP déjà établie et au lieu de ça notre objectif final est maintenant de concevoir une protection contre une attaque du type DNS poisoning, ou au moins d'empêcher que la connexion TCP soit interrompue fallacieusement. Ce nouvel objectif est bien en adéquation avec notre objectif final de sécuriser un portable Android (mieux protéger les données personnelles contenues à l’intérieur du smartphone).
+
+	Ce nouveau but vise à sécuriser les échanges de données pour faire en sorte que la conversation ne soit pas interrompue et alors empêcher qu’un tiers récupère les données échangées tout au long de la communication par une attaque Denial of Service qui interromprait la connexion TCP.
+
+	Malgré ce changement d’objectif, nous allons quand même nous concentrer aussi en perfectionner notre programme d’interruption de code TCP en l’écrivant dans un langage plus bas-niveau comme C pour ainsi essayer d’anticiper les réponses à venir.
+	
+	\subsection{Comment bloquer les attaques ci-dessus?}
+
+	Notre but principal, dans cette deuxième moitié d'année, est de contrer les attaques précédentes. Nous commencerons à travailler sur ce sujet, bien qu'il faille que les attaques sus-mentionnées arrivent à leur fin : modifier la connexion entre les deux systèmes.
+
+	Concernant l’attaque TCP, une façon simple de protéger l’utilisateur des attaques est mettre tout le réseau (celui que les deux utilisateurs sont en train d’utiliser) dans un mode non-promiscuous. Le souci avec cette solution est que, pour la mettre en \oe{}uvre, il faut être (ou demander à) l'administrateur du réseau pour changer le mode pour le non-promiscuous. Ce qui n’est pas toujours le cas : on n’a pas nécessairement l'accès d’administrateur dans le réseau Wi-Fi qu’on utilise.
+
+	Une solution possible est de vérifier s’il existe ou non un type de mode non-promiscuous pour la carte réseau dans chaque ordinateur ou smartphone. Il s'agit d'une solution assez simple, car lorsque vous êtes en mode non-promiscuous, personne sauf l'émetteur et le récepteur d’un paquet peuvent le voir sur la carte réseau de leur ordinateur. Nous allons chercher d’autres options, qui seront plus complexe :  lorsque nous sommes victime de l’attaque TCP, la réponse que l'émetteur initial reçoit est une réponse fausse, qui paraît provenir du récepteur. Il n'est pas trivial de voir que la personne qui a envoyé le message n’est pas le récepteur. 
+
+	Deuxièmement, pour l’attaque DNS Poisoning, nous pouvons utiliser la même idée : comme cette attaque repose aussi sur une  interférence dans la transmission de paquets entre deux utilisateurs, nous pouvons utiliser les mêmes idées (sécuriser soit le réseau avec le mode non-promiscuous, soit la carte réseau de chaque appareil).
+
+	Pour le DNS Poisoning, la solution la plus connue s’appelle DNSSEC, mais cette solution doit être mise en place par l'administrateur du domaine. Nous revenons donc à la même problématique que pour contrer l'attaque TCP.
+
+	Il nous faut travailler sur ce sujet pour décider quelle solution est la meilleure. Nous souhaitons volontairement nous passer de cryptographie pour cette phase du projet.
+
+    %Nous avons manifestement pris du retard sur les objectifs initiaux~: nous souhaitions avoir fini la phase «~attaque~» du projet pour le rendu de ce rapport, or l'une des deux parties de cette phase n'est pas suffisamment efficace pour être utilisée dans une attaque réelle. Nous devrons donc revoir nos objectifs à la baisse.
+
+    %Notre objectif final est maintenant de concevoir une protection contre une attaque de type DNS poisoning, ou au moins d'empêcher que la connexion TCP soit interrompue fallacieusement.
+
+    %Cependant, il faudra tout d'abord finir ce que nous avons commencé~: optimiser le code de l'interruption de connexion TCP en abaissant le niveau du langage, et en essayant d'anticiper sur les échanges à venir.
+
+    %Puis nous prendrons contact avec la Direction des Systèmes d'information pour avoir des informations sur le dispositif mis en place peu avant les vacances, et qui bloque la vue des paquets en transit qui ne nous sont pas destinés~: la manipulation rend le mode promiscuous inefficace. Par ailleurs, nous devrons engager une nouvelle phase de recherche ce mois-ci, afin d'avoir suffisamment de connaissances sur l'état de l'art pour développer un outil capable de contrer ceux que nous avons créés jusqu'à présent.
 
 \newpage
 \addcontentsline{toc}{section}{Conclusion}
