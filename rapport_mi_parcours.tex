@@ -128,9 +128,10 @@
   C'est sur ces points que nous allons travailler dans les semaines à venir.
 \newpage
 
-\section{Actualisation des objectifs}% ne suis pas passé par ici
+\section{Actualisation des objectifs}
 
-    Après révision des objectifs, voici ceux que nous conservons pour cette deuxième partie de projet~:
+    Après révision des objectifs, voici ceux que nous souhaitons conserver pour cette deuxième partie de projet~:
+
     \begin{itemize}[label=\color{bleu303}\textbullet{}]
         \item Accélérer le programme pour le DNS poisoning
         \item Accélérer le programme TCP et anticiper sur les réponses suivantes
@@ -140,18 +141,18 @@
     \subsection{Accélérer le programme pour le DNS poisoning}
     
     Comme cela a été mentionné dans la première partie, la rapidité de notre réponse lors du DNS poisoning est un problème.
-En effet, les serveurs DNS sont beaucoup plus performants que nos ordinateurs et renvoient la réponse avant que nous ayons pu envoyer la notre, la cible ne se contentant que de la première réponse, l'attaque n'aboutit pas.
+    En effet, les serveurs DNS sont beaucoup plus performants que nos ordinateurs et renvoient la réponse avant que nous ayons pu envoyer la notre, la cible ne se contentant que de la première réponse, l'attaque n'aboutit pas.
 
     Il y a plusieurs pistes pour palier à ce problème, la première est évidemment d'utiliser des machines plus puissantes, nous avons eu de bons résultats en explorant cette piste et nous allons continuer dans cette voie. Néanmoins, dans le cadre de ce projet nous souhaitions aussi mettre en évidence la facilité d'une attaque sur les communications, c'est pourquoi nous pensons qu'il y a d'autres moyens d'accélérer notre réponse, qui ne passe pas forcément par une amélioration de notre matériel, mais plutôt par une amélioration du code.
 
-    En effet, nous avons choisi d'utiliser le langage Python ainsi que la bibliothèque Scapy, qui est un langage de relativement haut-niveau. Nous pensons qu'en essayant avec un langage de plus bas niveau, nous pourrions gagner un temps suffisant pour permettre à presque n'importe quelle machine de pratiquer une attaque de type DNS Poisoning. La piste à explorer serait alors de réécrire notre langage en C pour profiter du temps de réaction que fournit un langage de bas niveau et ainsi renvoyer la réponse avant le serveur DNS.
+    En effet, nous avons choisi d'utiliser le langage Python ainsi que la bibliothèque \texttt{Scapy}, qui est un langage de relativement haut-niveau. Nous pensons qu'en essayant avec un langage de plus bas niveau, nous pourrions gagner un temps suffisant pour permettre à de nombreuses machines de pratiquer une attaque de type DNS Poisoning, et donc montrer l'éventualité d'une telle attaque. La piste à explorer serait alors de réécrire notre langage en C pour profiter du temps de réaction que fournit un langage de bas niveau et ainsi renvoyer la réponse avant le serveur DNS.
 
     Étant donné le retard que nous avons pris sur nos objectifs initiaux, et comme nous avons une version fonctionnelle de notre programme, il est probable que nous mettions de côté, du moins pour le moment, cette partie-là et avancions sur l'interruption de la connexion TCP qui n'est pas tout à fait fonctionnelle pour le moment.
-    De plus nous allons commencer à avancer sur la deuxième partie du projet qui est la partie sécurisation, qui risque elle aussi de prendre un peu de temps.
+    De plus nous allons commencer à avancer sur la deuxième partie du projet qui est la partie sécurisation, qui risque elle aussi de prendre un temps non négligeable.
 
     En parallèle, nous allons aussi nous poser la question d'éventuels tests sur des machines utilisant Android pour savoir si nous concentrons la partie sécurisation sur cet OS, afin d'essayer de fournir un produit final qui protégerait ce système contre une attaque de type DNS Poisoning.
 
-     \subsection{Accélérer le programme TCP}
+    \subsection{Accélérer le programme TCP}% ne suis pas passé par ici
 
     Comme nous avons décrit dans la Section 1.4,  dans notre objectif initial d'interrompre une communication TCP déjà établie, nous avons constaté quelques difficultés liées à la vitesse de réponse de notre programme~: notre réponse arrive après la réponse du serveur. Divers facteurs affectent ce problème~: la vitesse de l'ordinateur, notre localisation par rapport à la cible et la rapidité de réponse de notre algorithme. Ces deux premiers facteurs liés au hardware sont difficiles à contrôler pour nous et jusqu'à maintenant nous sommes plus concentrés sur l'amélioration de notre programme en terme de rapidité d'exécution.
 
